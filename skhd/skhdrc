@@ -1,0 +1,34 @@
+fn - g : yabai -m space $(yabai -m query --spaces --space | jq .index) --padding rel:0:0:238:0
+## Changing Window Focus
+# Within Space
+fn - j : yabai -m window --focus south
+fn - k : yabai -m window --focus north
+fn - h : yabai -m window --focus west
+fn - l : yabai -m window --focus east
+# cmd - shift - j : yabai -m window --focus south
+# fn - k : yabai -m window --focus north
+# fn - h : yabai -m window --focus west
+# cmd - shift - l : yabai -m window --focus east
+
+### Display
+fn - a : yabai -m display --focus west
+fn - d : yabai -m display --focus east
+
+### Space
+fn - n : yabai -m space --create
+fn - w : yabai -m space --destroy
+fn - u : yabai -m space --focus prev
+fn - o : yabai -m space --focus next
+
+# Rotate layout clockwise
+fn - r : yabai -m space  --rotate 270
+# Flip along y-axis
+fn - x : yabai -m space  --mirror y-axis
+# Flip along x-axis
+fn - y : yabai -m space  --mirror x-axis
+
+# # Toggle window float
+fn - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+fn - M : yabai -m window --toggle zoom-fullscreen
+fn - v : yabai -m window --toggle zoom-fullscreen

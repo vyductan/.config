@@ -61,6 +61,17 @@ config.colors = {
 }
 
 config.keys = {
+	-- Nvim bind
+	{
+		key = "i",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "i",
+			mods = "CTRL",
+		}),
+	},
+	-- End Nvim bind
+
 	-- This will create a new split and run the `top` program inside it
 	{
 		key = "s",

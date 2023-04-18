@@ -53,4 +53,20 @@ return {
       },
     },
   },
+  -- pretty_hover
+  {
+    "Fildo7525/pretty_hover",
+    event = "LspAttach",
+    opts = {},
+    keys = {
+      {
+        "<C-i>",
+        function()
+          require("pretty_hover").hover()
+        end,
+        mode = { "n", "i", "v" },
+        desc = "Hover - Info - Signature",
+      },
+    },
+  },
 }

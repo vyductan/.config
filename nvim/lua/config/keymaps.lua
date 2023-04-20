@@ -15,9 +15,10 @@ local function map(mode, lhs, rhs, opts)
   end
 end
 
--- Do not yank with x
+-- Do not yank with x, c, p
 vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("n", "c", '"_c')
+vim.keymap.set("n", "p", '"_p')
 
 -- map("n", "<leader><space>", "<Nop>") -- LazyVim unbind
 -- map("n", "<leader>,", "<Nop>") -- LazyVim unbind
@@ -35,12 +36,15 @@ map("i", "<C-a>", "<esc>gg<S-v>G", { desc = "Select All" })
 map("n", "dw", 'vb"_d')
 
 -- Redo
-map("n", "r", '<C-r>')
+map("n", "r", "<C-r>")
+
+-- Comment
+map("n", "<A-/>", "gcc", { remap = true })
+map("i", "<A-/>", "<esc>gcc", { remap = true })
 
 -- Buffer move BufferLine
-map('n', "{", "<cmd>BufferLineMovePrev<cr>", { desc = "Move current buffer backwards" })
-map('n', "}", "<cmd>BufferLineMoveNext<cr>", { desc = "Move current buffer forwards" })
-
+map("n", "{", "<cmd>BufferLineMovePrev<cr>", { desc = "Move current buffer backwards" })
+map("n", "}", "<cmd>BufferLineMoveNext<cr>", { desc = "Move current buffer forwards" })
 
 -- -- Move Lines
 -- map("n", "<A-S-j>", "<cmd>m .+1<cr>==", { desc = "Move Line down" })
@@ -55,11 +59,25 @@ vim.keymap.set("n", "te", ":tabedit<Return>", { silent = true })
 -- Window Split
 map("n", "<C-\\>", "<C-W>v", { desc = "Split window right" })
 map("n", "<C-->", "<C-W>s", { desc = "Split window below" })
-map("n", "<C-_>", "<C-W>s")     -- For Macos
+map("n", "<C-_>", "<C-W>s") -- For Macos
 map("n", "<leader>w-", "<Nop>") -- LazyVim unbind
 map("n", "<leader>w|", "<Nop>") -- LazyVim unbind
-map("n", "<leader>-", "<Nop>")  -- LazyVim unbind
-map("n", "<leader>|", "<Nop>")  -- LazyVim unbind
+map("n", "<leader>-", "<Nop>") -- LazyVim unbind
+map("n", "<leader>|", "<Nop>") -- LazyVim unbind
+
+-- Automatically add a trailing comma in JSON files
+-- https://medium.com/scoro-engineering/5-smart-mini-snippets-for-making-text-editing-more-fun-in-neovim-b55ffb96325a
+-- When creating a new line with o, make sure there is a trailing comma on the current line
+map("n", "o", function()
+  local line = vim.api.nvim_get_current_line()
+
+  local should_add_comma = string.find(line, "[^,{[]$")
+  if should_add_comma then
+    return "A,<cr>"
+  else
+    return "o"
+  end
+end, { buffer = true, expr = true })
 
 -- -- Pane Navigation
 -- vim.keymap.set({ "n", "t" }, "<C-h>", "<CMD>NavigatorLeft<CR>", { desc = "Go to Left Pane" })
@@ -79,7 +97,7 @@ map("n", "<leader>|", "<Nop>")  -- LazyVim unbind
 -- vim.keymap.set("", "sl", "<C-w>l")
 
 -- Resize window
-vim.keymap.set("n", "<C-w>_", "2<C-w>-") -- For Macos
+-- vim.keymap.set("n", "<C-w>_", "2<C-w>-") -- For Macos
 -- vim.keymap.set("n", "<C-w><left>", "<C-w><")
 -- vim.keymap.set("n", "<C-w><right>", "<C-w>>")
 -- vim.keymap.set("n", "<C-w><up>", "<C-w>+")

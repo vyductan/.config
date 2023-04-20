@@ -5,13 +5,4 @@ return {
       auto_install = true,
     },
   },
-  {
-    "windwp/nvim-ts-autotag",
-    --   event = ""
-    opts = {
-      autotag = {
-        enable = true,
-      },
-    },
-  },
 }

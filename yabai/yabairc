@@ -61,6 +61,7 @@ yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^Digital Color Meter$" manage=off
 yabai -m rule --add app="^ColorSlurp$" manage=off
+yabai -m rule --add app="^Python" manage=off
 
 # Vscode Opacity
 # yabai -m rule --add app="^Code$" opacity=0.9

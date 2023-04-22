@@ -3,7 +3,7 @@ alias la "ls -A"
 alias ll "ls -l"
 alias lla "ll -A"
 alias g git
-
+alias lz lazygit
 alias n "nvim $args"
 function cf
     cd ~/.config/$argv[1] && n

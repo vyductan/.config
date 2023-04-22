@@ -28,7 +28,8 @@ fn - x : yabai -m space  --mirror y-axis
 fn - y : yabai -m space  --mirror x-axis
 
 # # Toggle window float
-fn - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
+# fn - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
+fn - f : yabai -m space --layout $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end')
 
 fn - M : yabai -m window --toggle zoom-fullscreen
 fn - v : yabai -m window --toggle zoom-fullscreen

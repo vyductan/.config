@@ -1,9 +1,0 @@
--- return {
---   {
---     "numToStr/Navigator.nvim",
---     opts = {},
---     config = function(_, opts)
---       require("Navigator").setup(opts)
---     end,
---   },
--- }

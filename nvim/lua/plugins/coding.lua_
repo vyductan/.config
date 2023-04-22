@@ -1,8 +1,0 @@
--- return {
---   "nvim-treesitter.configs",
---   opts = {
---     autotag = {
---       enable = true,
---     },
---   },
--- }

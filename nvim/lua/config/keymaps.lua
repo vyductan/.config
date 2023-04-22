@@ -18,7 +18,7 @@ end
 -- Do not yank with x, c, p
 vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("n", "c", '"_c')
-vim.keymap.set("n", "p", '"_p')
+vim.keymap.set("v", "p", '"_dP')
 
 -- map("n", "<leader><space>", "<Nop>") -- LazyVim unbind
 -- map("n", "<leader>,", "<Nop>") -- LazyVim unbind

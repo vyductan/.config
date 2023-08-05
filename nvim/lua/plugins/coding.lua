@@ -9,13 +9,6 @@ return {
     opts = {},
   },
   {
-    "windwp/nvim-ts-autotag",
-    event = "VerryLazy",
-    opts = {
-      autotag = {
-        enable = true,
-      },
-    },
     "barrett-ruth/import-cost.nvim",
     build = "sh install.sh pnpm",
     opts = {},

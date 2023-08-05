@@ -134,8 +134,10 @@ config.keys = {
 		}),
 	},
 	-- Tab Move
-	{ key = ",", mods = "CMD", action = act.MoveTabRelative(-1) },
-	{ key = ".", mods = "CMD", action = act.MoveTabRelative(1) },
+	-- { key = ",", mods = "CMD", action = act.MoveTabRelative(-1) },
+	-- { key = ".", mods = "CMD", action = act.MoveTabRelative(1) },
+	{ key = "[", mods = "CMD", action = act.MoveTabRelative(-1) },
+	{ key = "]", mods = "CMD", action = act.MoveTabRelative(1) },
 	-- {
 	-- 	key = "k",
 	-- 	mods = "CTRL|SHIFT|ALT",

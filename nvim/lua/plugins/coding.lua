@@ -16,5 +16,8 @@ return {
         enable = true,
       },
     },
+    "barrett-ruth/import-cost.nvim",
+    build = "sh install.sh pnpm",
+    opts = {},
   },
 }

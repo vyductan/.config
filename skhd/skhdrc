@@ -1,3 +1,4 @@
+### avoid crashed screen area
 fn - g : yabai -m space $(yabai -m query --spaces --space | jq .index) --padding rel:0:0:238:0
 ## Changing Window Focus
 # Within Space
@@ -9,6 +10,7 @@ fn - l : yabai -m window --focus east
 # fn - k : yabai -m window --focus north
 # fn - h : yabai -m window --focus west
 # cmd - shift - l : yabai -m window --focus east
+fn + shift - g : yabai -m space $(yabai -m query --spaces --space | jq .index) --padding rel:0:0:-238:0
 
 ### Display
 fn - a : yabai -m display --focus west

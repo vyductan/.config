@@ -8,9 +8,10 @@ cmd + shift - j : yabai -m window --focus south
 cmd + shift - k : yabai -m window --focus north
 cmd + shift - h : yabai -m window --focus west
 cmd + shift - l : yabai -m window --focus east
+
 ### Display
-fn - a : yabai -m display --focus west
-fn - d : yabai -m display --focus east
+fn - space : yabai -m display --focus north
+fn + shift - space : yabai -m display --focus south
 
 ### Space
 fn - n : yabai -m space --create

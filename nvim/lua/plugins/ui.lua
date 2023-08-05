@@ -1,12 +1,4 @@
 return {
-  {
-    "rcarriga/nvim-notify",
-    opts = {
-      background_colour = "#000000",
-      fps = 60,
-      stages = "fade",
-    },
-  },
   -- bufferline
   {
     "akinsho/bufferline.nvim",
@@ -39,17 +31,6 @@ return {
         -- fill = {
         --   bg = "#073642",
         -- },
-      },
-    },
-  },
-  -- noice.nvim
-  {
-    "folke/noice.nvim",
-    opts = {
-      lsp = {
-        override = {
-          ["cmp.entry.get_documentation"] = true, -- fix warning checkhealth
-        },
       },
     },
   },

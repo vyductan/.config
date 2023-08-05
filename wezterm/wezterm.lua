@@ -34,10 +34,11 @@ end)
 
 config.default_prog = { "/opt/homebrew/bin/fish" }
 config.font = wezterm.font("Hack Nerd Font")
-config.font_size = 18
+config.font_size = 16
+-- config.font_size = 16
 -- config.tab_bar_at_bottom = true
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.8
+-- config.window_background_opacity = 0.8
 -- config.underline_position = -4
 -- config.underline_thickness = 50
 
@@ -56,9 +57,9 @@ config.window_background_opacity = 0.8
 -- Tokyonight - Moon
 -- config.color_scheme_dirs =
 config.color_scheme = "tokyonight_night"
-config.colors = {
-	background = "black",
-}
+-- config.colors = {
+-- 	background = "black",
+-- }
 
 config.keys = {
 	-- Nvim bind

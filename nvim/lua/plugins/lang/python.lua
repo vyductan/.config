@@ -21,27 +21,17 @@ return {
     "jose-elias-alvarez/null-ls.nvim",
     opts = function(_, opts)
       local nls = require("null-ls")
+      -- nls.setup({
+      --   debug = true,
+      -- })
       table.insert(
         opts.sources,
         nls.builtins.formatting.black.with({
           extra_args = {
-            "--line-length=120"
-          }
+            "--line-length=120",
+          },
         })
       )
     end,
   },
-  -- {
-  --   "jose-elias-alvarez/null-ls.nvim",
-  --   opts = function()
-  --     local nls = require("null-ls")
-  --     return {
-  --       sources = {
-  --         nls.builtins.formatting.black.with({
-  --           extra_args = { "--line-length=120" },
-  --         }),
-  --       },
-  --     }
-  --   end,
-  -- },
 }

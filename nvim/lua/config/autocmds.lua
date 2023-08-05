@@ -2,16 +2,39 @@
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
 
-local augroup = vim.api.nvim_create_augroup
-local autocmds = vim.api.nvim_create_autocmd
+-- local augroup = vim.api.nvim_create_augroup
+-- local autocmds = vim.api.nvim_create_autocmd
+--
+-- -- Dont't continue comments with o/O
+-- augroup("discontinue_comments", { clear = true })
+-- autocmds({ "FileType" }, {
+--   pattern = { "*" },
+--   callback = function()
+--     vim.opt.formatoptions = vim.opt.formatoptions - "o"
+--   end,
+--   group = "discontinue_comments",
+--   desc = "Dont't continue comments with o/O",
+-- })
 
--- Dont't continue comments with o/O
-augroup("discontinue_comments", { clear = true })
-autocmds({ "FileType" }, {
-  pattern = { "*" },
-  callback = function()
-    vim.opt.formatoptions = vim.opt.formatoptions - "o"
-  end,
-  group = "discontinue_comments",
-  desc = "Dont't continue comments with o/O",
-})
+-- Lsp border
+-- vim.api.nvim_command([[
+--   augroup lsp_hover
+--     autocmd!
+--     autocmd CursorHold * lua vim.lsp.buf.hover()
+--   augroup END
+-- ]])
+-- autocmd CursorHold,CursorHoldI * if mode() == 'i' | silent! lua vim.lsp.buf.hover() | endif
+-- autocmd CursorMoved,CursorMovedI * if mode() == 'i' | silent! lua vim.lsp.buf.clear_references() | endif
+-- augroup lsp_highlight
+--   autocmd!
+--   autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+--   autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+-- augroup END
+--
+-- " Customize the border
+-- augroup lsp_border
+--   autocmd!
+--   autocmd FileType lspinfo setlocal winhighlight=Normal:NormalFloat,border:FloatBorder
+--   autocmd FileType lspinfo setlocal winblend=10
+--   autocmd FileType lspinfo setlocal borderchars=╭─╮││╰─╯
+-- augroup END

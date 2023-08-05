@@ -11,6 +11,9 @@ local function map(mode, lhs, rhs, opts)
   if not keys.active[keys.parse({ lhs, mode = mode }).id] then
     opts = opts or {}
     opts.silent = opts.silent ~= false
+    if opts.remap and not vim.g.vscode then
+      opts.remap = nil
+    end
     vim.keymap.set(mode, lhs, rhs, opts)
   end
 end
@@ -20,8 +23,6 @@ vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("n", "c", '"_c')
 vim.keymap.set("v", "p", '"_dP')
 
--- map("n", "<leader><space>", "<Nop>") -- LazyVim unbind
--- map("n", "<leader>,", "<Nop>") -- LazyVim unbind
 map("n", "<leader><space>", "<cmd>Telescope keymaps<cr>", { desc = "Spotlight" })
 
 -- Increment/Decrement
@@ -32,27 +33,12 @@ map("n", "-", "<C-x>", { desc = "Decrement Number" })
 map("n", "<C-a>", "gg<S-v>G", { desc = "Select All" })
 map("i", "<C-a>", "<esc>gg<S-v>G", { desc = "Select All" })
 
--- Delete a word backwards
-map("n", "dw", 'vb"_d')
-
 -- Redo
 map("n", "r", "<C-r>")
-
--- Comment
-map("n", "<A-/>", "gcc", { remap = true })
-map("i", "<A-/>", "<esc>gcc", { remap = true })
 
 -- Buffer move BufferLine
 map("n", "{", "<cmd>BufferLineMovePrev<cr>", { desc = "Move current buffer backwards" })
 map("n", "}", "<cmd>BufferLineMoveNext<cr>", { desc = "Move current buffer forwards" })
-
--- -- Move Lines
--- map("n", "<A-S-j>", "<cmd>m .+1<cr>==", { desc = "Move Line down" })
--- map("n", "<A-S-k>", "<cmd>m .-2<cr>==", { desc = "Move Line up" })
--- map("i", "<A-S-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Line down" })
--- map("i", "<A-S-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Line up" })
--- map("v", "<A-S-j>", ":m '>+1<cr>gv=gv", { desc = "Move Lines down" })
--- map("v", "<A-S-k>", ":m '<-2<cr>gv=gv", { desc = "Move Lines up" })
 
 -- New tab
 vim.keymap.set("n", "te", ":tabedit<Return>", { silent = true })
@@ -64,20 +50,6 @@ map("n", "<leader>w-", "<Nop>") -- LazyVim unbind
 map("n", "<leader>w|", "<Nop>") -- LazyVim unbind
 map("n", "<leader>-", "<Nop>") -- LazyVim unbind
 map("n", "<leader>|", "<Nop>") -- LazyVim unbind
-
--- Automatically add a trailing comma in JSON files
--- https://medium.com/scoro-engineering/5-smart-mini-snippets-for-making-text-editing-more-fun-in-neovim-b55ffb96325a
--- When creating a new line with o, make sure there is a trailing comma on the current line
-map("n", "o", function()
-  local line = vim.api.nvim_get_current_line()
-
-  local should_add_comma = string.find(line, "[^,{[]$")
-  if should_add_comma then
-    return "A,<cr>"
-  else
-    return "o"
-  end
-end, { buffer = true, expr = true })
 
 -- -- Pane Navigation
 -- vim.keymap.set({ "n", "t" }, "<C-h>", "<CMD>NavigatorLeft<CR>", { desc = "Go to Left Pane" })

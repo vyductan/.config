@@ -2,22 +2,21 @@
 fn - g : yabai -m space $(yabai -m query --spaces --space | jq .index) --padding rel:0:0:238:0
 fn + shift - g : yabai -m space $(yabai -m query --spaces --space | jq .index) --padding rel:0:0:-238:0
 
-### Changing Window Focus
-## Within Space
-cmd + shift - j : yabai -m window --focus south
-cmd + shift - k : yabai -m window --focus north
-cmd + shift - h : yabai -m window --focus west
-cmd + shift - l : yabai -m window --focus east
-
-### Display
+### Displays
 fn - space : yabai -m display --focus north
 fn + shift - space : yabai -m display --focus south
 
-### Space
+### Spaces
 fn - n : yabai -m space --create
 fn - w : yabai -m space --destroy
-fn - h : yabai -m space --focus prev # from cmd + shift - h
-fn - l : yabai -m space --focus next # from cmd + shift - h
+cmd + shift - h : yabai -m space --focus prev # from cmd + shift - h
+cmd + shift - l : yabai -m space --focus next # from cmd + shift - h
+
+### Inside a Space - Changing Window Focus
+fn - j : yabai -m window --focus south
+fn - k : yabai -m window --focus north
+fn - h : yabai -m window --focus west
+fn - l : yabai -m window --focus east
 
 # Rotate layout clockwise
 fn - r : yabai -m space  --rotate 270

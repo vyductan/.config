@@ -51,28 +51,6 @@ set -gx PATH /opt/homebrew/opt/python/libexec/bin $PATH
 # set -gx CPPFLAGS "-I/opt/homebrew/opt/libpq/include -I/opt/homebrew/opt/openssl@3/include" $CPPFLAGS
 # set -gx PKG_CONFIG_PATH /opt/homebrew/opt/libpq/lib/pkgconfig $PKG_CONFIG_PATH
 
-# Pyenv
-# set -Ux PYENV_ROOT $HOME/.pyenv
-# set -gx PATH $PYENV_ROOT/bin $PATH
-# pyenv init - | source
-# alias brew="env PATH=(string replace (pyenv root)/shims '' \"\$PATH\") brew"
-# status --is-interactive; and pyenv virtualenv-init - | source
-
-# set -gx PATH $HOME/.pyenv/bin $PATH
-# pyenv init - | source
-# status --is-interactive; and pyenv virtualenv-init - | source
-
-# set -x PATH $HOME/.pyenv/bin $PATH
-# status --is-interactive; and . (pyenv init - | source)
-# status --is-interactive; and . (pyenv virtualenv-init - | source)
-# set -x PYENV_VERSION (cat ~/.pyenv/version)
-
-# set -Ux PYENV_ROOT $HOME/.pyenv
-# set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths
-# pyenv init - | source
-# status --is-interactive; and . (pyenv init - | source)
-# status --is-interactive; and . (pyenv virtualenv-init - | source)
-
 # SSH
 # eval $(ssh-agent -c)
 

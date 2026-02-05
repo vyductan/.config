@@ -3,51 +3,40 @@ return {
   {
     "akinsho/bufferline.nvim",
     opts = {
-      options = {
-        -- separator_style = "slant",
-        -- indicator = {
-        --   style = "underline",
-        -- },
-      },
       highlights = {
-        -- indicator_selected = {
-        --   fg = "#FF0000",
-        --   bg = "#FF0000",
-        -- },
         buffer_selected = {
           bold = true,
         },
-        -- separator = {
-        --   fg = "#073642",
-        --   bg = "#002b36",
-        -- },
-        -- separator_selected = {
-        --   fg = "#073642",
-        -- },
-        -- background = {
-        --   fg = "#657b83",
-        --   bg = "#002b36",
-        -- },
-        -- fill = {
-        --   bg = "#073642",
-        -- },
       },
     },
   },
-  -- pretty_hover
   {
-    "Fildo7525/pretty_hover",
-    event = "LspAttach",
-    opts = {},
-    keys = {
-      {
-        "<C-i>",
-        function()
-          require("pretty_hover").hover()
-        end,
-        mode = { "n", "i", "v" },
-        desc = "Hover - Info - Signature",
+    "folke/noice.nvim",
+    opts = {
+      lsp = {
+        hover = {
+          -- Set not show a message if hover is not available
+          -- ex: shift+k on Typescript code
+          silent = true,
+        },
+      },
+      presets = {
+        -- add border
+        lsp_doc_border = true,
       },
     },
   },
+  -- {
+  --   "hrsh7th/nvim-cmp",
+  --   opts = function(_, opts)
+  --     local cmp = require("cmp")
+  --     opts.window = {
+  --       completion = cmp.config.window.bordered(),
+  --       documentation = cmp.config.window.bordered(),
+  --     }
+  --     -- TODO: show import source
+  --     -- https://github.com/hrsh7th/nvim-cmp/issues/98
+  --   end,
+  -- },
+  -- { "kevinhwang91/nvim-ufo", dependencies = { "kevinhwang91/promise-async" } },
 }

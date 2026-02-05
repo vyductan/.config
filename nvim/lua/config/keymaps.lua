@@ -4,26 +4,28 @@
 
 -- local Util = require("lazyvim.util")
 
-local function map(mode, lhs, rhs, opts)
-  local keys = require("lazy.core.handler").handlers.keys
-  ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
-  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    if opts.remap and not vim.g.vscode then
-      opts.remap = nil
-    end
-    vim.keymap.set(mode, lhs, rhs, opts)
-  end
-end
+-- local function map(mode, lhs, rhs, opts)
+--   local keys = require("lazy.core.handler").handlers.keys
+--   ---@cast keys LazyKeysHandler
+--   -- do not create the keymap if a lazy keys handler exists
+--   if not keys.active[keys.parse({ lhs, mode = mode }).id] then
+--     opts = opts or {}
+--     opts.silent = opts.silent ~= false
+--     if opts.remap and not vim.g.vscode then
+--       opts.remap = nil
+--     end
+--     vim.keymap.set(mode, lhs, rhs, opts)
+--   end
+-- end
+local map = vim.keymap.set
 
 -- Do not yank with x, c, p
-vim.keymap.set("n", "x", '"_x')
-vim.keymap.set("n", "c", '"_c')
-vim.keymap.set("v", "p", '"_dP')
+-- vim.space.set("n", "x", '"_x')
+-- vim.space.set("n", "c", '"_c')
+-- -- vim.set.set("v", "p", '"_dP')
+-- vim.keymap.space("v", "p", "P")
 
-map("n", "<leader><space>", "<cmd>Telescope keymaps<cr>", { desc = "Spotlight" })
+-- map("n", "<leader><space>", "<cmd>Telescope keymaps<cr>", { desc = "Spotlight" })
 
 -- Increment/Decrement
 map("n", "+", "<C-a>", { desc = "Increment Number" })
@@ -39,6 +41,9 @@ map("n", "r", "<C-r>")
 -- Buffer move BufferLine
 map("n", "{", "<cmd>BufferLineMovePrev<cr>", { desc = "Move current buffer backwards" })
 map("n", "}", "<cmd>BufferLineMoveNext<cr>", { desc = "Move current buffer forwards" })
+map("", "<C-d>", function()
+  Snacks.bufdelete()
+end, { desc = "Delete Buffer" })
 
 -- New tab
 vim.keymap.set("n", "te", ":tabedit<Return>", { silent = true })
@@ -50,6 +55,8 @@ map("n", "<leader>w-", "<Nop>") -- LazyVim unbind
 map("n", "<leader>w|", "<Nop>") -- LazyVim unbind
 map("n", "<leader>-", "<Nop>") -- LazyVim unbind
 map("n", "<leader>|", "<Nop>") -- LazyVim unbind
+
+-- map("n", "<C-i>", vim.lsp.buf.hover, { desc = "Hover" })
 
 -- -- Pane Navigation
 -- vim.keymap.set({ "n", "t" }, "<C-h>", "<CMD>NavigatorLeft<CR>", { desc = "Go to Left Pane" })

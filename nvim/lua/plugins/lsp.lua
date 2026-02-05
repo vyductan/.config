@@ -1,10 +1,36 @@
 return {
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = {
-      {
-        automatic_installation = true,
-      },
-    },
-  },
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   init = function()
+  --     local keys = require("lazyvim.plugins.lsp.keymaps").get()
+  --     keys[#keys + 1] = { "K", false }
+  --     -- keys[#keys + 1] = { "K", require("pretty_hover").hover() }
+  --     keys[#keys + 1] = { "K", vim.lsp.buf.hover }
+  --     -- keys[#keys + 1] = { "<C-i>", vim.lsp.buf.hover }
+  --   end,
+  -- },
+  -- {
+  --   "Fildo7525/pretty_hover",
+  --   event = "LspAttach",
+  --   opts = {},
+  --   keys = { { "<C-i>", require("pretty_hover").hover() } },
+  -- },
+  -- {
+  --   "williamboman/mason-lspconfig.nvim",
+  --   opts = {
+  --     {
+  --       automatic_installation = true,
+  --     },
+  --   },
+  -- },
+
+  -- -- Extra has below
+  -- {
+  --   "simrat39/symbols-outline.nvim",
+  --   cmd = "SymbolsOutline",
+  --   keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
+  --   opts = {
+  --     position = "right",
+  --   },
+  -- },
 }

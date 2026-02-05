@@ -1,10 +1,17 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
--- if vim.g.vscode then
---   -- VSCode extension
---   -- vim.api.nvim_set_hl(0, 'Visual', {bg="#5706a2"})
---   require("config.vscode")
--- else
---   require("config.lazy")
---   -- ordinary Neovim
+
+-- Liquid
+-- local lspconfig = require("lspconfig")
+-- local configs = require("lspconfig.configs")
+-- if not configs.liquid then
+--   configs.liquid = {
+--     default_config = {
+--       cmd = { "shopify", "theme", "language-server" },
+--       filetypes = { "liquid" },
+--       root_dir = lspconfig.util.root_pattern(".theme-check.yml"),
+--       settings = {},
+--     },
+--   }
 -- end
+-- lspconfig.liquid.setup({})

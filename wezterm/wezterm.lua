@@ -28,14 +28,15 @@ wezterm.on("gui-startup", function(cmd)
 	-- }
 	-- mux.set_active_workspace("Developer")
 
-	local window = mux.spawn_window(cmd or {})
-	window:gui_window():toggle_fullscreen()
+	local _, _, window = mux.spawn_window(cmd or {})
+	-- window:gui_window():toggle_fullscreen()
 end)
 
 config.default_prog = { "/opt/homebrew/bin/fish" }
-config.font = wezterm.font("Hack Nerd Font")
-config.font_size = 16
--- config.font_size = 16
+-- config.font = wezterm.font("Hack Nerd Font")
+config.font_size = 14
+config.initial_cols = 140
+config.initial_rows = 40
 -- config.tab_bar_at_bottom = true
 config.window_decorations = "RESIZE"
 -- config.window_background_opacity = 0.8
@@ -71,6 +72,14 @@ config.keys = {
 			mods = "CTRL",
 		}),
 	},
+	{
+		key = "d",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "d",
+			mods = "CTRL",
+		}),
+	},
 	-- End Nvim bind
 
 	-- This will create a new split and run the `top` program inside it
@@ -81,6 +90,31 @@ config.keys = {
 			key = "s",
 			mods = "CTRL",
 		}),
+	},
+	{
+		key = "b",
+		mods = "CMD",
+		action = wezterm.action_callback(function(_, pane)
+			local pane_id = pane:pane_id()
+			local log_path = "/tmp/wez-sidebar-launch.log"
+			local sidebar_path = "/Users/vyductan/.local/bin/wez-sidebar"
+			local command = table.concat({
+				string.format(
+					"printf 'start time=%%s parent_pane=%s tty=%%s\\n' \"$(date -Is 2>/dev/null || date)\" \"$(tty 2>/dev/null || printf none)\" >> %q",
+					pane_id,
+					log_path
+				),
+				string.format("export WEZTERM_PANE=%s RUST_BACKTRACE=1", pane_id),
+				string.format("%q", sidebar_path),
+				string.format("rc=$?; printf 'exit=%%s\\n' \"$rc\" >> %q", log_path),
+				'if [ "$rc" -ne 0 ]; then sleep 10; fi',
+			}, "; ")
+			pane:split({
+				direction = "Right",
+				size = 0.2,
+				args = { "/bin/sh", "-lc", command },
+			})
+		end),
 	},
 	{
 		key = "h",

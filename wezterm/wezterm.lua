@@ -11,19 +11,119 @@ local state_dir = wezterm.home_dir .. "/.local/share/wezterm/resurrect/"
 resurrect.state_manager.change_state_save_dir(state_dir)
 resurrect.state_manager.set_max_nlines(500)
 
+-- Window screen positions. resurrect only keeps sizes, and WezTerm's Lua API
+-- can set a window's position but not read it, so ask macOS (System Events;
+-- WezTerm needs Accessibility permission). The native title carries a "[w<id>]"
+-- tag so each macOS window can be matched back to its mux window.
+local positions_file = state_dir .. "window_positions.json"
+
+wezterm.on("format-window-title", function(tab)
+	return tab.active_pane.title .. "  [w" .. tab.window_id .. "]"
+end)
+
+local FRAMES_SCRIPT = [[
+tell application "System Events" to tell process "wezterm-gui"
+	set out to ""
+	repeat with w in windows
+		set {x, y} to position of w
+		set {ww, hh} to size of w
+		set out to out & (name of w) & tab & x & tab & y & tab & ww & tab & hh & linefeed
+	end repeat
+	return out
+end tell
+]]
+
+local function save_window_positions()
+	local ok, stdout, stderr = wezterm.run_child_process({ "osascript", "-e", FRAMES_SCRIPT })
+	if not ok then
+		wezterm.log_warn("window positions not saved (grant WezTerm Accessibility?): " .. stderr)
+		return
+	end
+	local frames = {}
+	for line in stdout:gmatch("[^\n]+") do
+		local id, x, y, w, h = line:match("%[w(%d+)%]\t(-?%d+)\t(-?%d+)\t(%d+)\t(%d+)$")
+		if id then
+			frames[tonumber(id)] = { x = tonumber(x), y = tonumber(y), w = tonumber(w), h = tonumber(h) }
+		end
+	end
+	-- Same order resurrect uses for workspace_state.window_states (and restores in)
+	local positions = {}
+	local workspace = mux.get_active_workspace()
+	for _, win in ipairs(mux.all_windows()) do
+		if win:get_workspace() == workspace then
+			local frame = frames[win:window_id()]
+			-- System Events only sees windows on the visible Space; a partial
+			-- snapshot would wipe good positions, so keep the last full one
+			if not frame then
+				return
+			end
+			table.insert(positions, frame)
+		end
+	end
+	local f = io.open(positions_file, "w")
+	if f then
+		f:write(wezterm.json_encode(positions))
+		f:close()
+	end
+end
+
+local function restore_window_positions()
+	local f = io.open(positions_file, "r")
+	if not f then
+		return
+	end
+	local ok, positions = pcall(wezterm.json_parse, f:read("*a"))
+	f:close()
+	if not ok or type(positions) ~= "table" then
+		return
+	end
+	local i = 0
+	for _, win in ipairs(mux.all_windows()) do
+		i = i + 1
+		local frame = positions[i]
+		local gui = win:gui_window()
+		if frame and gui then
+			local scale = gui:get_dimensions().dpi / 72
+			gui:set_inner_size(frame.w * scale, frame.h * scale)
+			-- System Events reports points; set_position/set_inner_size take pixels
+			gui:set_position(frame.x * scale, frame.y * scale)
+		end
+	end
+end
+
 local function save_current_workspace()
 	local workspace = wezterm.mux.get_active_workspace()
 	resurrect.state_manager.save_state(resurrect.workspace_state.get_workspace_state())
 	resurrect.state_manager.write_current_state(workspace, "workspace")
+	save_window_positions()
 end
 
--- Guard: config reloads would otherwise stack another save loop each time
-if not wezterm.GLOBAL.resurrect_periodic_started then
-	wezterm.GLOBAL.resurrect_periodic_started = true
-	resurrect.state_manager.periodic_save({ interval_seconds = 120, save_workspaces = true })
-end
-wezterm.on("resurrect.state_manager.periodic_save.finished", function()
-	resurrect.state_manager.write_current_state(wezterm.mux.get_active_workspace(), "workspace")
+-- Auto-save every 2 minutes. Driven by update-status (fires ~1s in the live
+-- config) rather than resurrect's periodic_save timer: WezTerm evaluates the
+-- config in several Lua contexts and discards some, and a timer started in a
+-- discarded one silently dies. wezterm.GLOBAL is shared, so this throttles
+-- across windows and reloads.
+local AUTOSAVE_SECONDS = 120
+wezterm.on("update-status", function()
+	local now = os.time()
+	if now - (wezterm.GLOBAL.last_session_save or 0) < AUTOSAVE_SECONDS then
+		return
+	end
+	wezterm.GLOBAL.last_session_save = now
+	save_current_workspace()
+end)
+-- Also save when a window loses focus: update-status pauses while WezTerm is in
+-- the background, so this catches moves made just before switching away.
+wezterm.on("window-focus-changed", function(window)
+	if window:is_focused() then
+		return
+	end
+	local now = os.time()
+	if now - (wezterm.GLOBAL.last_session_save or 0) < 10 then
+		return
+	end
+	wezterm.GLOBAL.last_session_save = now
+	save_current_workspace()
 end)
 wezterm.on("resurrect.error", function(err)
 	wezterm.log_error("resurrect: " .. tostring(err))
@@ -35,10 +135,16 @@ wezterm.on("gui-startup", function(cmd)
 		mux.spawn_window(cmd)
 		return
 	end
+	-- Hold off the first auto-save so it can't overwrite saved state with a
+	-- half-restored layout (windows not yet moved back into place)
+	wezterm.GLOBAL.last_session_save = os.time()
 	local ok = resurrect.state_manager.resurrect_on_gui_startup()
 	if not ok or #mux.all_windows() == 0 then
 		mux.spawn_window(cmd or {})
+		return
 	end
+	-- GUI windows don't exist yet during gui-startup; position them once they do
+	wezterm.time.call_after(1, restore_window_positions)
 end)
 
 config.default_prog = { "/opt/homebrew/bin/fish" }

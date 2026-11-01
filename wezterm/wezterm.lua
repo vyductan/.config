@@ -4,32 +4,41 @@ local mux = wezterm.mux
 local config = {}
 
 -- config.native_macos_fullscreen_mode = true
-wezterm.on("gui-startup", function(cmd)
-	-- local args = {}
-	-- if cmd then
-	--   args = cmd.args
-	-- end
-	--
-	-- local developer_dir = '~/Developer'
-	-- local tab, editor_pane, window = mux.spawn_window({
-	--   workspace = "Developer",
-	--   cwd = cmd.cwd,
-	--   args = args
-	-- })
-	-- local terminal_1_pane = editor_pane:split {
-	--   direction = 'Bottom',
-	--   size = 0.3,
-	--   -- cwd = developer_dir
-	-- }
-	-- local terminal_2_pane = terminal_1_pane:split {
-	--   direction = 'Right',
-	--   size = 0.5,
-	--   -- cwd = developer_dir
-	-- }
-	-- mux.set_active_workspace("Developer")
 
-	local _, _, window = mux.spawn_window(cmd or {})
-	-- window:gui_window():toggle_fullscreen()
+-- Session restore (layout: windows/tabs/panes + cwd) via resurrect.wezterm
+local resurrect = wezterm.plugin.require("https://github.com/MLFlexer/resurrect.wezterm")
+local state_dir = wezterm.home_dir .. "/.local/share/wezterm/resurrect/"
+resurrect.state_manager.change_state_save_dir(state_dir)
+resurrect.state_manager.set_max_nlines(500)
+
+local function save_current_workspace()
+	local workspace = wezterm.mux.get_active_workspace()
+	resurrect.state_manager.save_state(resurrect.workspace_state.get_workspace_state())
+	resurrect.state_manager.write_current_state(workspace, "workspace")
+end
+
+-- Guard: config reloads would otherwise stack another save loop each time
+if not wezterm.GLOBAL.resurrect_periodic_started then
+	wezterm.GLOBAL.resurrect_periodic_started = true
+	resurrect.state_manager.periodic_save({ interval_seconds = 120, save_workspaces = true })
+end
+wezterm.on("resurrect.state_manager.periodic_save.finished", function()
+	resurrect.state_manager.write_current_state(wezterm.mux.get_active_workspace(), "workspace")
+end)
+wezterm.on("resurrect.error", function(err)
+	wezterm.log_error("resurrect: " .. tostring(err))
+end)
+
+wezterm.on("gui-startup", function(cmd)
+	-- Launched with explicit args (e.g. `wezterm start -- htop`): don't restore
+	if cmd and cmd.args then
+		mux.spawn_window(cmd)
+		return
+	end
+	local ok = resurrect.state_manager.resurrect_on_gui_startup()
+	if not ok or #mux.all_windows() == 0 then
+		mux.spawn_window(cmd or {})
+	end
 end)
 
 config.default_prog = { "/opt/homebrew/bin/fish" }
@@ -92,31 +101,6 @@ config.keys = {
 		}),
 	},
 	{
-		key = "b",
-		mods = "CMD",
-		action = wezterm.action_callback(function(_, pane)
-			local pane_id = pane:pane_id()
-			local log_path = "/tmp/wez-sidebar-launch.log"
-			local sidebar_path = "/Users/vyductan/.local/bin/wez-sidebar"
-			local command = table.concat({
-				string.format(
-					"printf 'start time=%%s parent_pane=%s tty=%%s\\n' \"$(date -Is 2>/dev/null || date)\" \"$(tty 2>/dev/null || printf none)\" >> %q",
-					pane_id,
-					log_path
-				),
-				string.format("export WEZTERM_PANE=%s RUST_BACKTRACE=1", pane_id),
-				string.format("%q", sidebar_path),
-				string.format("rc=$?; printf 'exit=%%s\\n' \"$rc\" >> %q", log_path),
-				'if [ "$rc" -ne 0 ]; then sleep 10; fi',
-			}, "; ")
-			pane:split({
-				direction = "Right",
-				size = 0.2,
-				args = { "/bin/sh", "-lc", command },
-			})
-		end),
-	},
-	{
 		key = "h",
 		mods = "CMD",
 		action = act.SendKey({
@@ -167,6 +151,15 @@ config.keys = {
 			-- command = { args = { 'top' } },
 			size = { Percent = 50 },
 		}),
+	},
+	-- Save session layout now (also auto-saved every 2 minutes)
+	{
+		key = "s",
+		mods = "CMD|SHIFT",
+		action = wezterm.action_callback(function(win, pane)
+			save_current_workspace()
+			win:toast_notification("WezTerm", "Session saved", nil, 2000)
+		end),
 	},
 	-- Tab Move
 	-- { key = ",", mods = "CMD", action = act.MoveTabRelative(-1) },

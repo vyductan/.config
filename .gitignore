@@ -1,4 +1,28 @@
+# Whitelist: ignore everything in ~/.config, then opt in what belongs in dotfiles.
+# New tools dropping config/tokens here stay out of git by default.
+/*
+!/.gitignore
+!/README.md
+
+!/alacritty/
+!/fish/
+!/karabiner/
+!/kitty/
+!/nvim/
+!/nvim_BAK/
+!/nvim_LazyVim/
+!/nvim_LazyVimCustom/
+!/sketchybar/
+!/skhd/
+!/tmux/
+!/wezterm/
+!/yabai/
+
+# Re-ignore noise inside whitelisted dirs
 .DS_Store
-fish_variables
+fish_variables*
 fishd.tmp.*
 fish/config-local.fish
+karabiner/automatic_backups/
+*.bak
+*.pre-resurrect
